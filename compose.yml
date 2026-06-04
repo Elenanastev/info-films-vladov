@@ -1,0 +1,77 @@
+services:
+
+  # ─────────────────────────────────────────
+  # Web application (PHP 8.2 + Apache)
+  # ─────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: elena22209/infofilms-app:latest   # <- замени с твоето Docker Hub потребителско име
+    container_name: infofilms_app
+    ports:
+      - "8080:80"          # достъп от браузъра на http://localhost:8080
+    volumes:
+      - ./uploads:/var/www/html/uploads   # поддържа качени файлове при рестарт
+    environment:
+      DB_HOST: db
+      DB_NAME: infofilms
+      DB_USER: infofilms_user
+      DB_PASS: infofilms_pass
+    depends_on:
+      db:
+        condition: service_healthy   # изчаква MySQL да е готов
+    restart: unless-stopped
+    networks:
+      - infofilms_net
+
+  # ─────────────────────────────────────────
+  # Database (MySQL 8.0)
+  # ─────────────────────────────────────────
+  db:
+    image: mysql:8.0
+    container_name: infofilms_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secret_pass
+      MYSQL_DATABASE: infofilms
+      MYSQL_USER: infofilms_user
+      MYSQL_PASSWORD: infofilms_pass
+    volumes:
+      - db_data:/var/lib/mysql              # данните оцеляват при рестарт
+      - ./database.sql:/docker-entrypoint-initdb.d/database.sql  # автоматична инициализация
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_secret_pass"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - infofilms_net
+
+  # ─────────────────────────────────────────
+  # phpMyAdmin (опционален – за управление на БД)
+  # ─────────────────────────────────────────
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: infofilms_phpmyadmin
+    ports:
+      - "8081:80"          # достъп на http://localhost:8081
+    environment:
+      PMA_HOST: db
+      PMA_USER: infofilms_user
+      PMA_PASSWORD: infofilms_pass
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - infofilms_net
+
+# ─────────────────────────────────────────
+# Named volumes & networks
+# ─────────────────────────────────────────
+volumes:
+  db_data:
+
+networks:
+  infofilms_net:
+    driver: bridge

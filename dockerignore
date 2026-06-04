@@ -1,0 +1,19 @@
+# Git
+.git
+.gitignore
+
+# Docker files (don't copy into image)
+Dockerfile
+compose.yml
+.dockerignore
+
+# Documentation
+README.md
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Local dev uploads (use the volume mount instead)
+uploads/posters/*
+!uploads/posters/.gitkeep
