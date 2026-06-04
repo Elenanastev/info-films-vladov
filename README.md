@@ -31,10 +31,10 @@ infofilms/
 
 | Услуга | Образ | Порт | Описание |
 |---|---|---|---|
-| `app` | `yourdockerhubusername/infofilms-app` | `8080` | PHP 8.2 + Apache уеб сървър |
+| `app` | `elena22209/infofilms-app` | `8080` | PHP 8.2 + Apache уеб сървър |
 | `db` | `mysql:8.0` | вътрешен | MySQL база данни |
 | `phpmyadmin` | `phpmyadmin:latest` | `8081` | Уеб интерфейс за управление на БД |
-
+e-
 ### Комуникация между услугите
 
 Всички контейнери са свързани чрез обща Docker мрежа `infofilms_net` (bridge driver). PHP приложението достига до MySQL като използва hostname `db` – това е името на услугата в `compose.yml`, което Docker автоматично резолвира към IP адреса на контейнера. Портовете на базата данни **не са** изложени навън за по-голяма сигурност.
@@ -56,13 +56,13 @@ infofilms/
 
 **1. Клонирай хранилището**
 ```bash
-git clone https://github.com/твоето-потребителско-име/infofilms.git
+git clone https://github.com/Elenanastev/infofilms.git
 cd infofilms
 ```
 
 **2. (Веднъж) Обнови Docker Hub потребителското си име в `compose.yml`**
 ```yaml
-image: твоето-dockerhub-потребителско-име/infofilms-app:latest
+image: elena22209/infofilms-app:latest
 ```
 
 **3. Стартирай всички контейнери**
@@ -95,13 +95,13 @@ docker compose up -d
 
 ```bash
 # Изгради образа локално
-docker build -t твоето-dockerhub-потребителско-име/infofilms-app:latest .
+docker build -t elena22209/infofilms-app:latest .
 
 # Влез в Docker Hub
 docker login
 
 # Публикувай образа
-docker push твоето-dockerhub-потребителско-име/infofilms-app:latest
+docker push elena22209/infofilms-app:latest
 ```
 
 ---
